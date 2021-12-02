@@ -165,7 +165,7 @@ namespace CodeGenerator
                         defaultValues.Add(dvProp.Name, dvProp.Value.ToString());
                     }
                     string returnType = val["ret"]?.ToString() ?? "void";
-                    string comment = null;
+                    string comment = val["comment"]?.ToString() ?? "TODO: No comment specified";
 
                     string structName = val["stname"].ToString();
                     bool isConstructor = val.Value<bool>("constructor");

@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -19,6 +17,11 @@ namespace CodeGenerator
             if (args.Length > 0)
             {
                 outputPath = args[0];
+                if (Path.GetExtension(outputPath) != "")
+                {
+                    Console.WriteLine($"Provided path was not a directory");
+                    return;
+                }
             }
             else
             {
@@ -75,7 +78,11 @@ namespace CodeGenerator
             var defs = new ImguiDefinitions();
             defs.LoadFrom(definitionsPath);
 
-            Console.WriteLine($"Outputting generated code files to {outputPath}.");
+            Console.WriteLine($"Outputting generated code files to \"{outputPath}\" folder.");
+            if (!Directory.Exists(outputPath))
+            {
+                Directory.CreateDirectory(outputPath);
+            }
 
             foreach (EnumDefinition ed in defs.Enums)
             {
@@ -650,6 +657,9 @@ namespace CodeGenerator
             string friendlyName = overload.FriendlyName;
 
             string staticPortion = selfName == null ? "static " : string.Empty;
+            writer.WriteLine($"/// <summary>");
+            writer.WriteLine($"/// {overload.Comment}");
+            writer.WriteLine($"/// </summary>");
             writer.PushBlock($"public {staticPortion}{overrideRet ?? safeRet} {friendlyName}({invocationList})");
             foreach (string line in preCallLines)
             {
